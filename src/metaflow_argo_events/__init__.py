@@ -1,3 +1,3 @@
-# SPDX-FileCopyrightText: 2025-present Bryan Galvin <bcgalvin@gmail.com>
-#
-# SPDX-License-Identifier: MIT
+"""Metaflow Argo Events OpenAPI Integration."""
+
+__version__ = "0.1.0"

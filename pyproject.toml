@@ -12,28 +12,28 @@ license = "MIT"
 keywords = ["metaflow", "argo", "events", "openapi", "workflow", "type-safe"]
 authors = [{ name = "bcgalvin", email = "bcgalvin@gmail.com" }]
 classifiers = [
-  "Development Status :: 4 - Beta",
-  "Programming Language :: Python",
-  "Programming Language :: Python :: 3.12",
-  "Programming Language :: Python :: 3.13",
-  "Programming Language :: Python :: Implementation :: CPython",
-  "Programming Language :: Python :: Implementation :: PyPy",
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
 ]
 dependencies = [
-  "metaflow>=2.15.0,<3.0.0",
-  "pydantic>=2.9.2,<3.0.0",
-  "loguru>=0.7.3",
-  "typer>=0.15.0",
-  "rich>=13.0.0",
+    "loguru>=0.7.3",
+    "metaflow>=2.15.0,<3.0.0",
+    "pydantic>=2.9.2,<3.0.0",
+    "rich>=13.0.0",
+    "typer>=0.15.0",
 ]
 
 [project.optional-dependencies]
 dev = [
-  "pytest>=7.2.0,<8.0.0",
-  "pytest-cov>=4.0.0",
-  "mypy>=1.6.1",
-  "isort>=5.12.0",
-  "pyright>=1.1.362",
+    "mypy>=1.15.0",
+    "pre-commit>=4.0.1",
+    "pyright>=1.1.362",
+    "pytest-cov>=4.0.0",
+    "pytest>=7.2.0,<8.0.0",
 ]
 clients = ["openapi-generator-cli>=7"]
 
@@ -49,7 +49,7 @@ Source = "https://github.com/bcgalvin/metaflow-argo-events"
 metaflow-events = "metaflow_argo_events.cli:app"
 
 [tool.hatch.version]
-path = "src/metaflow_argo_events/__about__.py"
+path = "src/metaflow_argo_events/__init__.py"
 
 [tool.hatch.envs.default]
 installer = "uv"
@@ -58,7 +58,7 @@ dependencies = ["pytest", "pytest-cov"]
 [tool.hatch.envs.default.scripts]
 types = "mypy --install-types --non-interactive --cache-dir=.mypy_cache/ {args:metaflow_argo_events}"
 lint = ["ruff check {args:.}", "pylint -ry -j 0 {args:src}"]
-lint-fix = ["black .", "ruff check {args:src} --fix"]
+lint-fix = ["ruff format .", "ruff check {args:src} --fix"]
 
 [tool.hatch.envs.test]
 template = "default"
@@ -75,38 +75,26 @@ warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
 disallow_incomplete_defs = true
+plugins = ["pydantic.mypy"]
 
 [[tool.mypy.overrides]]
 module = "metaflow.*"
 ignore_missing_imports = true
 
-[[tool.mypy.overrides]]
-module = "pydantic"
-ignore_missing_imports = true
-
 [tool.pyright]
+pythonVersion = "3.12"
 include = ["src", "tests"]
-typeCheckingMode = "strict"
-reportMissingImports = true
 reportMissingTypeStubs = false
+reportMissingImports = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = "test_*.py"
 python_functions = "test_*"
 markers = [
-  "integration: marks tests as integration tests (deselect with '-m \"not integration\"')",
-  "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests (deselect with '-m \"not integration\"')",
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
 ]
-
-[tool.black]
-line-length = 120
-target-version = ['py312']
-include = '\.pyi?$'
-
-[tool.isort]
-profile = "black"
-line_length = 120
 
 [tool.pylint.'MESSAGES CONTROL']
 max-line-length = 120
@@ -114,29 +102,30 @@ max-line-length = 120
 [tool.ruff]
 target-version = "py312"
 line-length = 120
+include = ["src/metaflow_argo_events/**/*.py"]
 
 [tool.ruff.lint]
 select = ["ALL"]
 ignore = [
-  "B027",   # boolean positional argument
-  "FBT003", # boolean positional argument
-  "EM101",
-  "EM102",  # missing docstring in exception
-  "D100",   # missing docstring in public module
-  "D101",   # missing docstring in public class
-  "D102",   # missing docstring in public method
-  "D103",   # missing docstring in public function
-  "D104",   # missing docstring in public package
-  "D105",   # missing docstring in magic method
-  "D106",   # missing docstring in public nested class
-  "D107",   # missing docstring in __init__
-  "D203",   # no blank lines before docstrings.
-  "D212",   # Conflicts with D213.  Both can not be enabled.
-  "ISC001", # formatter conflict
-  "COM812", # too many blank lines
-  "COM819", # too many blank lines
+    "B027", # boolean positional argument
+    "FBT003", # boolean positional argument
+    "EM101",
+    "EM102", # missing docstring in exception
+    "D100", # missing docstring in public module
+    "D101", # missing docstring in public class
+    "D102", # missing docstring in public method
+    "D103", # missing docstring in public function
+    "D104", # missing docstring in public package
+    "D105", # missing docstring in magic method
+    "D106", # missing docstring in public nested class
+    "D107", # missing docstring in __init__
+    "D203", # no blank lines before docstrings.
+    "D212", # Conflicts with D213.  Both can not be enabled.
+    "ISC001", # formatter conflict
+    "COM812", # too many blank lines
+    "COM819", # too many blank lines
 ]
 unfixable = [
-  # don't mess with unused imports
-  "F401",
+    # don't mess with unused imports
+    "F401",
 ]
