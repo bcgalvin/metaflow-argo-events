@@ -2,15 +2,21 @@ import json
 from typing import Any, TypeVar
 
 import yaml
-from rich.console import Console
 from rich.markdown import Markdown
 from rich.table import Table
 
-console = Console()
+from metaflow_argo_events.cli.console import get_console, get_error_console
+from metaflow_argo_events.logger import get_logger
+
+console = get_console()
+error_console = get_error_console()
+logger = get_logger("format")
+
 T = TypeVar("T")
 
 
 def format_success(message: str, data: T | None = None) -> None:
+    logger.info("Success: %s", message)
     console.print(f"[bold green]✓[/bold green] {message}")
     if data:
         if isinstance(data, dict):
@@ -31,13 +37,20 @@ def display_dict(data: dict[str, Any], title: str | None = None) -> None:
         table.add_row(str(key), value_str)
 
     if title:
+        logger.debug("Displaying dictionary table: %s", title)
         console.print(f"[bold]{title}[/bold]")
+    else:
+        logger.debug("Displaying dictionary table")
+
     console.print(table)
 
 
 def display_list(data: list[T], title: str | None = None) -> None:
     if title:
+        logger.debug("Displaying list: %s", title)
         console.print(f"[bold]{title}[/bold]")
+    else:
+        logger.debug("Displaying list")
 
     for i, item in enumerate(data, 1):
         if isinstance(item, dict):
@@ -48,6 +61,7 @@ def display_list(data: list[T], title: str | None = None) -> None:
 
 
 def format_output(data: T, output_format: str = "text") -> str:
+    logger.debug("Formatting output as %s", output_format)
     match output_format.lower():
         case "json":
             return json.dumps(data, indent=2)
@@ -58,6 +72,7 @@ def format_output(data: T, output_format: str = "text") -> str:
 
 
 def print_output(data: T, output_format: str = "text") -> None:
+    logger.info("Printing output in %s format", output_format)
     formatted_output = format_output(data, output_format)
     match output_format.lower():
         case "json":
@@ -69,10 +84,15 @@ def print_output(data: T, output_format: str = "text") -> None:
 
 
 def display_schema(schema: dict[str, Any]) -> None:
-    console.print(f"[bold]Schema:[/bold] {schema.get('name', 'Unnamed')}")
-    console.print(f"[bold]Version:[/bold] {schema.get('version', 'Unversioned')}")
+    schema_name = schema.get("name", "Unnamed")
+    schema_version = schema.get("version", "Unversioned")
+
+    logger.info("Displaying schema: %s (v%s)", schema_name, schema_version)
+    console.print(f"[bold]Schema:[/bold] {schema_name}")
+    console.print(f"[bold]Version:[/bold] {schema_version}")
 
     if "parameters" in schema and isinstance(schema["parameters"], list):
+        logger.debug("Schema has %s parameters", len(schema["parameters"]))
         console.print("\n[bold]Parameters:[/bold]")
         table = Table(show_header=True, header_style="bold", expand=True)
         table.add_column("Name")
@@ -92,13 +112,16 @@ def display_schema(schema: dict[str, Any]) -> None:
 
 
 def display_markdown(text: str) -> None:
+    logger.debug("Displaying markdown content")
     md = Markdown(text)
     console.print(md)
 
 
 def display_warning(message: str) -> None:
-    console.print(f"[bold yellow]Warning:[/bold yellow] {message}")
+    logger.warning(message)
+    error_console.print(f"[bold yellow]Warning:[/bold yellow] {message}")
 
 
 def display_info(message: str) -> None:
+    logger.info(message)
     console.print(f"[bold blue]Info:[/bold blue] {message}")

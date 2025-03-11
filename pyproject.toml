@@ -112,6 +112,7 @@ include = ["src/metaflow_argo_events/**/*.py"]
 select = ["ALL"]
 ignore = [
   "ANN101", # missing type annotation for self in method
+  "ANN102",
   "B027",   # boolean positional argument
   "FBT001",
   "FBT003", # boolean positional argument
@@ -125,12 +126,13 @@ ignore = [
   "D105",   # missing docstring in magic method
   "D106",   # missing docstring in public nested class
   "D107",   # missing docstring in __init__
-  "D203",   # no blank lines before docstrings.
+  "D203",   # no blank lines before docstrincgs.
   "D212",   # Conflicts with D213.  Both can not be enabled.
   "ISC001", # formatter conflict
   "COM812", # too many blank lines
   "COM819", # too many blank lines
   "RUF022",
+  "RSE102",
 ]
 unfixable = [
   # don't mess with unused imports

@@ -1,3 +1,4 @@
+from metaflow_argo_events.cli.console import get_console, get_error_console
 from metaflow_argo_events.cli.format import (
     display_dict,
     display_list,
@@ -19,6 +20,8 @@ __all__ = [
     "display_list",
     "format_output",
     "format_success",
+    "get_console",
+    "get_error_console",
     "handle_error",
     "SchemaError",
     "ValidationError",
