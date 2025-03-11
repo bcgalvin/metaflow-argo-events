@@ -32,4 +32,5 @@ repos:
     rev: v1.15.0
     hooks:
       - id: mypy
-        additional_dependencies: [ pydantic ]
+        additional_dependencies: [ pydantic, types-PyYAML ]
+        args: [ --config=pyproject.toml ]

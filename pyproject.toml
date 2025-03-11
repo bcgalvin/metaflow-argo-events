@@ -12,28 +12,31 @@ license = "MIT"
 keywords = ["metaflow", "argo", "events", "openapi", "workflow", "type-safe"]
 authors = [{ name = "bcgalvin", email = "bcgalvin@gmail.com" }]
 classifiers = [
-    "Development Status :: 4 - Beta",
-    "Programming Language :: Python",
-    "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13",
-    "Programming Language :: Python :: Implementation :: CPython",
-    "Programming Language :: Python :: Implementation :: PyPy",
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
 ]
 dependencies = [
-    "loguru>=0.7.3",
-    "metaflow>=2.15.0,<3.0.0",
-    "pydantic>=2.9.2,<3.0.0",
-    "rich>=13.0.0",
-    "typer>=0.15.0",
+  "loguru>=0.7.3",
+  "metaflow>=2.15.0,<3.0.0",
+  "pydantic>=2.9.2,<3.0.0",
+  "rich>=13.0.0",
+  "typer>=0.15.0",
 ]
 
 [project.optional-dependencies]
 dev = [
-    "mypy>=1.15.0",
-    "pre-commit>=4.0.1",
-    "pyright>=1.1.362",
-    "pytest-cov>=4.0.0",
-    "pytest>=7.2.0,<8.0.0",
+  "mypy>=1.15.0",
+  "pre-commit>=4.0.1",
+  "pyright>=1.1.362",
+  "pytest-cov>=4.0.0",
+  "pytest>=7.2.0,<8.0.0",
+  "ruff>=0.9.1",
+  "types-PyYAML>=6.0.12.20241221",
+  "types-Pygments==2.19.0.20250219",
 ]
 clients = ["openapi-generator-cli>=7"]
 
@@ -46,17 +49,17 @@ Issues = "https://github.com/bcgalvin/metaflow-argo-events/issues"
 Source = "https://github.com/bcgalvin/metaflow-argo-events"
 
 [project.scripts]
-metaflow-events = "metaflow_argo_events.cli:app"
+metaflow-events = "metaflow_argo_events.cli.main:app"
 
 [tool.hatch.version]
 path = "src/metaflow_argo_events/__init__.py"
 
 [tool.hatch.envs.default]
 installer = "uv"
-dependencies = ["pytest", "pytest-cov"]
+features = ["dev"]
 
 [tool.hatch.envs.default.scripts]
-types = "mypy --install-types --non-interactive --cache-dir=.mypy_cache/ {args:metaflow_argo_events}"
+types = "mypy --install-types --non-interactive --cache-dir=.mypy_cache/ {args:src/metaflow_argo_events}"
 lint = ["ruff check {args:.}", "pylint -ry -j 0 {args:src}"]
 lint-fix = ["ruff format .", "ruff check {args:src} --fix"]
 
@@ -71,6 +74,7 @@ run-cov = "pytest --cov=metaflow_argo_events --cov-report=term-missing --cov-rep
 
 [tool.mypy]
 python_version = "3.12"
+ignore_missing_imports = true
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
@@ -92,8 +96,8 @@ testpaths = ["tests"]
 python_files = "test_*.py"
 python_functions = "test_*"
 markers = [
-    "integration: marks tests as integration tests (deselect with '-m \"not integration\"')",
-    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+  "integration: marks tests as integration tests (deselect with '-m \"not integration\"')",
+  "slow: marks tests as slow (deselect with '-m \"not slow\"')",
 ]
 
 [tool.pylint.'MESSAGES CONTROL']
@@ -107,27 +111,30 @@ include = ["src/metaflow_argo_events/**/*.py"]
 [tool.ruff.lint]
 select = ["ALL"]
 ignore = [
-    "B027", # boolean positional argument
-    "FBT003", # boolean positional argument
-    "EM101",
-    "EM102", # missing docstring in exception
-    "D100", # missing docstring in public module
-    "D101", # missing docstring in public class
-    "D102", # missing docstring in public method
-    "D103", # missing docstring in public function
-    "D104", # missing docstring in public package
-    "D105", # missing docstring in magic method
-    "D106", # missing docstring in public nested class
-    "D107", # missing docstring in __init__
-    "D203", # no blank lines before docstrings.
-    "D212", # Conflicts with D213.  Both can not be enabled.
-    "ISC001", # formatter conflict
-    "COM812", # too many blank lines
-    "COM819", # too many blank lines
+  "ANN101", # missing type annotation for self in method
+  "B027",   # boolean positional argument
+  "FBT001",
+  "FBT003", # boolean positional argument
+  "EM101",
+  "EM102",  # missing docstring in exception
+  "D100",   # missing docstring in public module
+  "D101",   # missing docstring in public class
+  "D102",   # missing docstring in public method
+  "D103",   # missing docstring in public function
+  "D104",   # missing docstring in public package
+  "D105",   # missing docstring in magic method
+  "D106",   # missing docstring in public nested class
+  "D107",   # missing docstring in __init__
+  "D203",   # no blank lines before docstrings.
+  "D212",   # Conflicts with D213.  Both can not be enabled.
+  "ISC001", # formatter conflict
+  "COM812", # too many blank lines
+  "COM819", # too many blank lines
+  "RUF022",
 ]
 unfixable = [
-    # don't mess with unused imports
-    "F401",
+  # don't mess with unused imports
+  "F401",
 ]
 [tool.ruff.lint.per-file-ignores]
-"src/metaflow_argo_events/cli.py" = ["ARG001"]
+"src/metaflow_argo_events/cli/main.py" = ["ARG001"]

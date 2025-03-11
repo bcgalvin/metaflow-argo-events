@@ -24,9 +24,7 @@ def get_version() -> str:
 @app.callback()
 def main(
     ctx: typer.Context,
-    version: bool | None = typer.Option(
-        False, "--version", "-v", help="Show version and exit.", is_flag=True
-    ),
+    version: bool | None = typer.Option(False, "--version", "-v", help="Show version and exit.", is_flag=True),
 ) -> None:
     """
     Metaflow OpenAPI Utilities.

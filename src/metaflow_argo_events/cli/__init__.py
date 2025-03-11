@@ -15,11 +15,11 @@ from metaflow_argo_events.exceptions import (
 __all__ = [
     "app",
     "CliError",
-    "SchemaError",
-    "ValidationError",
-    "handle_error",
-    "format_success",
-    "format_output",
     "display_dict",
     "display_list",
+    "format_output",
+    "format_success",
+    "handle_error",
+    "SchemaError",
+    "ValidationError",
 ]
