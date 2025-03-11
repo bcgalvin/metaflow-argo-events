@@ -9,11 +9,12 @@ app = typer.Typer(
     help="Metaflow OpenAPI utilities for Argo Events.",
     add_completion=True,
     pretty_exceptions_enable=True,
+    no_args_is_help=True,
 )
 
 
 def get_version() -> str:
-    """Get current version of the package."""
+    """Get current package version."""
     try:
         return importlib.metadata.version("metaflow-argo-events")
     except importlib.metadata.PackageNotFoundError:
