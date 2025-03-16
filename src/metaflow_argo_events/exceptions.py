@@ -68,6 +68,19 @@ class ConfigError(CliError):
         super().__init__(message, hint)
 
 
+class AuthError(ConfigError):
+    def __init__(self, detail: str, hint: str | None = None) -> None:
+        super().__init__("auth", detail, hint)
+
+    @classmethod
+    def bearer_token_missing(cls) -> "AuthError":
+        return cls("bearer_token must be provided when method is 'bearer'")
+
+    @classmethod
+    def service_headers_missing(cls) -> "AuthError":
+        return cls("service_headers must be provided when method is 'service'")
+
+
 class AccessDeniedError(CliError):
     def __init__(self, resource: str, operation: str, hint: str | None = None) -> None:
         message = f"Permission denied: Cannot {operation} {resource}"
