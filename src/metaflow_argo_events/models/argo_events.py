@@ -11,7 +11,7 @@ class ArgoEventSchema(BaseModel):
     url: AnyHttpUrl | None = Field(
         default=None, description="Webhook endpoint URL", examples=["https://events.example.com/webhook"]
     )
-    payload: dict[str, Any] = Field(default_factory=dict, description="Event payload data")
+    payload: dict[str, str | int | float | bool] = Field(default_factory=dict, description="Event payload data")
     access_token: str | None = Field(
         default=None,
         description="Authentication token for Bearer auth",
@@ -32,7 +32,7 @@ class ArgoEventSchema(BaseModel):
 
 class PayloadItem(BaseModel):
     key: str = Field(..., description="Key for the payload entry", examples=["status"])
-    value: Any = Field(
+    value: str | int | float | bool = Field(
         ..., description="Value for the payload entry (will be converted to string)", examples=["success", 42, True]
     )
 
@@ -45,7 +45,9 @@ class PayloadItem(BaseModel):
 class PublishOptions(BaseModel):
     force: bool = Field(default=True, description="Whether to publish regardless of environment")
     ignore_errors: bool = Field(default=True, description="Whether to suppress errors")
-    additional_payload: dict[str, Any] | None = Field(default=None, description="Additional payload data to include")
+    additional_payload: dict[str, str | int | float | bool] | None = Field(
+        default=None, description="Additional payload data to include"
+    )
 
     model_config = ConfigDict(
         title="Publish Options",
@@ -81,13 +83,14 @@ class PublishResult(BaseModel):
 
 
 class ArgoEventPayload(BaseModel):
+    # System fields (always included)
     name: str = Field(..., description="Event name", examples=["data_processed"])
     id: str = Field(..., description="Unique event identifier", examples=["f8d7e9c6-5b4a-3c2d-1e0f-9a8b7c6d5e4f"])
     timestamp: int = Field(..., description="Unix timestamp when event was created", examples=[1684159845])
     utc_date: str = Field(..., description="UTC date in YYYYMMDD format", examples=["20230515"])
     generated_by_metaflow: bool = Field(default=True, description="Flag indicating Metaflow generation")
 
-    # allow additional properties for dynamic fields
+    # Dynamic fields - allow additional properties
     model_config = ConfigDict(
         extra="allow",
         title="Argo Event Payload",
@@ -112,7 +115,7 @@ class CreateArgoEventInput(BaseModel):
     url: str | None = Field(
         default=None, description="Webhook endpoint URL", examples=["https://events.example.com/webhook"]
     )
-    payload: dict[str, Any] = Field(
+    payload: dict[str, str | int | float | bool] = Field(
         default_factory=dict, description="Initial event payload data", examples=[{"status": "success", "count": 42}]
     )
     access_token: str | None = Field(
@@ -140,7 +143,8 @@ class CreateArgoEventInput(BaseModel):
     def validate_payload_values(cls, v: dict[str, object] | None) -> dict[str, str]:
         if isinstance(v, dict):
             return {k: str(val) for k, val in v.items()}
-        return v
+        # Return an empty dict instead of None
+        return {} if v is None else v
 
 
 class ArgoEventOutput(BaseModel):
@@ -150,7 +154,7 @@ class ArgoEventOutput(BaseModel):
     name: str = Field(..., description="Name of the published event", examples=["data_processed"])
     timestamp: int = Field(..., description="Unix timestamp when event was published", examples=[1684159845])
     status: str = Field(default="published", description="Publication status", examples=["published"])
-    payload: dict[str, Any] | None = Field(default=None, description="Event payload data")
+    payload: dict[str, str | int | float | bool] | None = Field(default=None, description="Event payload data")
 
     model_config = ConfigDict(
         title="Argo Event Output",
