@@ -106,13 +106,14 @@ max-line-length = 120
 [tool.ruff]
 target-version = "py312"
 line-length = 120
-include = ["src/metaflow_argo_events/**/*.py"]
+include = ["src/**/*.py", "tests/**/*.py"]
 
 [tool.ruff.lint]
 select = ["ALL"]
 ignore = [
   "ANN101", # missing type annotation for self in method
   "ANN102",
+  "ANN401",
   "B027",   # boolean positional argument
   "FBT001",
   "FBT003", # boolean positional argument
