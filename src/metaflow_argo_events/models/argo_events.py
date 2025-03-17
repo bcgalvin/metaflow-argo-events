@@ -83,14 +83,12 @@ class PublishResult(BaseModel):
 
 
 class ArgoEventPayload(BaseModel):
-    # System fields (always included)
     name: str = Field(..., description="Event name", examples=["data_processed"])
     id: str = Field(..., description="Unique event identifier", examples=["f8d7e9c6-5b4a-3c2d-1e0f-9a8b7c6d5e4f"])
     timestamp: int = Field(..., description="Unix timestamp when event was created", examples=[1684159845])
     utc_date: str = Field(..., description="UTC date in YYYYMMDD format", examples=["20230515"])
     generated_by_metaflow: bool = Field(default=True, description="Flag indicating Metaflow generation")
 
-    # Dynamic fields - allow additional properties
     model_config = ConfigDict(
         extra="allow",
         title="Argo Event Payload",
@@ -143,7 +141,6 @@ class CreateArgoEventInput(BaseModel):
     def validate_payload_values(cls, v: dict[str, object] | None) -> dict[str, str]:
         if isinstance(v, dict):
             return {k: str(val) for k, val in v.items()}
-        # Return an empty dict instead of None
         return {} if v is None else v
 
 
